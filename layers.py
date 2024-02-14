@@ -10,7 +10,39 @@ import torch.nn.functional as F
 
 from warnings import warn
 
-
+def generate_pointcloud_ply(xyz, color, pc_file):
+    # how to generate a pointcloud .ply file using xyz and color
+    # xyz    ndarray  3,N  float
+    # color  ndarray  3,N  uint8
+    df = np.zeros((6, xyz.shape[1]))
+    df[0] = xyz[0]
+    df[1] = xyz[1]
+    df[2] = xyz[2]
+    df[3] = color[0]
+    df[4] = color[1]
+    df[5] = color[2]
+    float_formatter = lambda x: "%.4f" % x
+    points =[]
+    for i in df.T:
+        points.append("{} {} {} {} {} {} 0\n".format
+                      (float_formatter(i[0]), float_formatter(i[1]), float_formatter(i[2]),
+                       int(i[3]), int(i[4]), int(i[5])))
+    file = open(pc_file, "w")
+    file.write('''ply
+    format ascii 1.0
+    element vertex %d
+    property float x
+    property float y
+    property float z
+    property uchar red
+    property uchar green
+    property uchar blue
+    property uchar alpha
+    end_header
+    %s
+    ''' % (len(points), "".join(points)))
+    file.close()
+    
 def disp_to_depth(disp, min_depth, max_depth):
     """Convert network's sigmoid output into depth prediction
     The formula for this conversion is given in the 'additional considerations'

@@ -6,10 +6,10 @@ import numpy as np
 
 # load data from file
 # you replace this using with open
-gt_path = os.path.join(os.path.dirname(__file__), "splits", "endovis", "curve", "gt_poses.npz")
+gt_path = os.path.join(os.path.dirname(__file__), "splits", "endovis", "gt_poses_sq2.npz")
 gt_local_poses = np.load(gt_path, fix_imports=True, encoding='latin1')["data"]
 
-our_path = os.path.join(os.path.dirname(__file__), "splits", "endovis", "curve", "pose_our.npz")
+our_path = os.path.join(os.path.dirname(__file__), "splits", "endovis", "pred_pose_sq2.npz")
 our_local_poses = np.load(our_path, fix_imports=True, encoding='latin1')["data"]
 
 
@@ -52,7 +52,8 @@ points_gt = np.array(points_gt)
 
 # new a figure and set it into 3d
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+# ax = fig.gca(projection='3d')
+ax = fig.add_subplot(projection = '3d')
 
 # set figure information
 # ax.set_title("3D_Curve")
@@ -61,8 +62,9 @@ ax.set_ylabel("y [mm]")
 ax.set_zlabel("z [mm]")
 
 # draw the figure, the color is r = read
-figure1, = ax.plot(points_gt[:, 0, 0], points_gt[:, 1, 0], points_gt[:, 2, 0], c='b', linewidth=1.6)
-figure2, = ax.plot(points_our[:, 0, 0], points_our[:, 1, 0], points_our[:, 2, 0], c='g', linewidth=1.6)
+figure1, = ax.plot(points_gt[:, 0, 0], points_gt[:, 1, 0], points_gt[:, 2, 0], c='b', linewidth=1.6, label='GT Pose')
+figure2, = ax.plot(points_our[:, 0, 0], points_our[:, 1, 0], points_our[:, 2, 0], c='g', linewidth=1.6, label='Pred Pose')
+ax.legend()
 
-plt.savefig('vo.png',dpi=600)
+plt.savefig('vo_sq2.png',dpi=600)
 plt.show()
